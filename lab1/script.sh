@@ -18,7 +18,7 @@ echo "Живет = Freshwater"  >> feebas
 touch kabutops
 echo "Живет = Cave Ocean" >> kabutops
 touch servine
-echo "Способности = Leer Vine Whip Wrap Growth Leaf Tornado Leech Seed Mega Drain Slam Leaf Blade Coil Giga Drain Wring Out Gastro Acid Leaf Storm" >> servine
+echo -e "Способности = Leer Vine Whip Wrap Growth\nLeaf Tornado Leech Seed Mega Drain\nSlam Leaf Blade Coil Giga Drain Wring Out\nGastro Acid Leaf Storm" >> servine
 # Files in ariados 
 cd ariados
 touch vanillish
@@ -29,11 +29,11 @@ cd ..
 # Files in carracosta 
 cd carracosta
 touch geodude 
-echo "Способности = Mountain Peak Landslide Sturdy Rock Head" >> geodude
+echo -e "Способности = Mountain Peak Landslide\nSturdy Rock Head" >> geodude
 touch swanna
 echo "Тип покемона = WATER FLYING" >> swanna 
 touch pidgeotto
-echo "Возможности = Overland=6 Surface=1 Sky=10 Jump=3 Power2=0 Intelligence=3" >>pidgeotto
+echo -e "Возможности = Overland=6 Surface=1 Sky=10\nJump=3 Power2=0 Intelligence=3" >>pidgeotto
 cd ..
 # Files in magmortar 
 cd magmortar
@@ -47,7 +47,7 @@ cd ..
 # Permissions 
 chmod 307 ariados
 cd ariados
-chmod u=rx g=rx o=x exploud
+chmod u=rx,g=rx,o=x exploud
 chmod 444 vanillish  
 chmod 357 makuhita
 chmod 400 caterpie
@@ -79,16 +79,20 @@ chmod 666 servine
 
 cd ..
 # скопировать содержимое файла kabutops в новый файл lab0/carracosta/geodudekabutops
+chmod u+w lab0/carracosta
 cp lab0/kabutops lab0/carracosta/geodudekabutops
 # cоздать жесткую ссылку для файла servine с именем lab0/carracosta/pidgeottoservine
 ln lab0/servine lab0/carracosta/pidgeottoservine
 # cоздать символическую ссылку для файла feebas с именем lab0/magmortar/geodudefeebas
 ln -s ../feebas lab0/magmortar/geodudefeebas
 # скопировать файл feebas в директорию lab0/magmortar/cyndaquil
+chmod u+w lab0/magmortar/cyndaquil
+chmod u+r lab0/feebas
 cp lab0/feebas lab0/magmortar/cyndaquil
 # объединить содержимое файлов lab0/carracosta/swanna, lab0/carracosta/geodude, в новый файл lab0/feebas_27
 cat lab0/carracosta/swanna lab0/carracosta/geodude > lab0/feebas_27
 # скопировать рекурсивно директорию carracosta в директорию lab0/carracosta/buizel
+chmod u=rwx lab0/carracosta/buizel
 cp -r lab0/carracosta lab0/carracosta/buizel
 # создать символическую ссылку c именем Copy_23 на директорию magmortar в каталоге lab0
 ln -s magmortar lab0/Copy_23 
@@ -96,27 +100,34 @@ ln -s magmortar lab0/Copy_23
 
 
 # Рекурсивно подсчитать количество строк содержимого файлов из директории lab0, имя которых начинается на 'g', отсортировать вывод по уменьшению количества, ошибки доступа не подавлять и не перенаправлять
-find lab0 -type f -name "g*" -exec wc -l {} \; | sort -nr
+# last command wc -l lab0/carracosta/geodude lab0/magmortar/geodude | sort -nr
+grep -rc "^" lab0/ --include="g*" | sort -t: -k2 -nr
 # Вывести рекурсивно список имен и атрибутов файлов в директории magmortar, список отсортировать по возрастанию даты доступа к файлу, ошибки доступа не подавлять и не перенаправлять
 ls -luRrt lab0/magmortar
 # Вывести содержимое файлов в директории magmortar, оставить только строки, заканчивающиеся на 'm', добавить вывод ошибок доступа в стандартный поток вывода
-find lab0/magmortar -type f -exec cat {} \; 2>&1 | grep "m$" 
+cat lab0/magmortar/* 2>&1 | grep 'm$'
 # Вывести список имен и атрибутов файлов в директории ariados, список отсортировать по возрастанию даты модификации файла, ошибки доступа не подавлять и не перенаправлять
+chmod u+r lab0/ariados
 ls -ltr lab0/ariados
 # Вывести рекурсивно список имен и атрибутов файлов в директории lab0, заканчивающихся на символ 'n', список отсортировать по имени a->z, подавить вывод ошибок доступа
-find lab0 -type f -name "*n" -exec ls -l {} \; 2>/dev/null |sort -k9
+ls -lR lab0 2>/dev/null | grep 'n$' | sort -k9
 # Рекурсивно вывести содержимое файлов из директории lab0, имя которых заканчивается на 'o', строки отсортировать по имени z->a, ошибки доступа перенаправить в файл в директории /tmp
-find lab0 -type f -name "*o" -exec cat {} \; 2>/tmp/errors | sort -r 
+touch /tmp/errors_512524
+chmod u+w /tmp/errors_512524
+cat lab0/*o lab0/*/*o lab0/*/*/*o 2>/tmp/errors_512524 | sort -r
 
 # Удалить файл kabutops
 rm lab0/kabutops
 # Удалить файл lab0/carracosta/pidgeotto
+chmod u+w lab0/carracosta
 rm lab0/carracosta/pidgeotto
 # удалить символические ссылки lab0/magmortar/geodudefeeb*
 rm lab0/magmortar/geodudefeeb*
 # удалить жесткие ссылки lab0/carracosta/pidgeottoservi*
 rm lab0/carracosta/pidgeottoservi*
 # Удалить директорию magmortar
+chmod u+w lab0/magmortar/cyndaquil
 rm -r lab0/magmortar
 # Удалить директорию lab0/ariados/makuhita
-rm -r lab0/ariados/makuhita
+rmdir  lab0/ariados/makuhita
+
